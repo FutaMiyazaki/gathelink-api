@@ -1,0 +1,35 @@
+FROM ruby:3.1
+
+ARG DATABASE_USERNAME
+ARG DATABASE_PASSWORD
+ARG DATABASE_HOST
+ARG CONTAINER_PORT
+ARG AWS_ACCESS_KEY_ID
+ARG AWS_SECRET_ACCESS_KEY
+
+RUN apt update -qq && apt install -y postgresql-client
+
+ENV LANG=C.UTF-8 \
+  TZ=Asia/Tokyo \
+  DATABASE_USERNAME=${DATABASE_USERNAME}} \
+  DATABASE_PASSWORD=${DATABASE_PASSWORD} \
+  DATABASE_HOST=${DATABASE_HOST} \
+  AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
+  AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+
+RUN mkdir /myapp
+WORKDIR /myapp
+
+COPY Gemfile /myapp/Gemfile
+COPY Gemfile.lock /myapp/Gemfile.lock
+
+RUN bundle install
+COPY . /myapp
+
+COPY entrypoint-prd.sh /usr/bin/
+RUN chmod +x /usr/bin/entrypoint-prd.sh
+ENTRYPOINT ["entrypoint-prd.sh"]
+
+EXPOSE ${CONTAINER_PORT}
+
+CMD ["rails", "s", "-b", "0.0.0.0", "-p", "3000", "-e", "production"]
