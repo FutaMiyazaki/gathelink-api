@@ -19,4 +19,5 @@ jobs:
         with:
           rubocop_version: gemfile
           rubocop_extensions: rubocop-rails:gemfile rubocop-rspec:gemfile
+          github_token: ${{ secrets.CI_TOKEN }}
           reporter: github-pr-review
