@@ -2,10 +2,11 @@ require 'rails_helper'
 
 RSpec.describe "Api::V1::Links", type: :request do
   let(:link_params) { attributes_for(:link) }
-  let(:params) do {
-    url: "https://gathelink.app",
-    title: "gathelinkのurlです"
-  }
+  let(:params) do
+    {
+      url: "https://gathelink.app",
+      title: "gathelinkのurlです"
+    }
   end
 
   describe "GET /api/v1/links" do
@@ -24,11 +25,10 @@ RSpec.describe "Api::V1::Links", type: :request do
 
   describe "DELETE /api/v1/links" do
     let!(:link) { create(:link) }
+
     it "リクエストが成功すること" do
-      expect do
-        delete api_v1_link_path(link.id)
-        expect(response).to have_http_status(:success)
-      end.to change{ Link.count }.by(-1)
+      delete api_v1_link_path(link.id)
+      expect(response).to have_http_status(:success)
     end
   end
 end

@@ -23,7 +23,7 @@ RSpec.describe Link, type: :model do
     end
 
     it 'urlが1000文字以上の場合、無効である' do
-      link = build(:link, url: "https://gathelink.app/" + "a" * 1000)
+      link = build(:link, url: "https://gathelink.app/#{'a' * 1000}")
       expect(link).to be_invalid
     end
 
