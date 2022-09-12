@@ -1,7 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe Link, type: :model do
-  describe 'validation' do
+  describe 'Association' do
+    it "User と N:1 の関係である" do
+      expect(described_class.reflect_on_association(:user).macro).to eq :belongs_to
+    end
+  end
+
+  describe 'Validation' do
     it '全てのパラメータが正しい場合、有効である' do
       link = build(:link)
       expect(link).to be_valid
