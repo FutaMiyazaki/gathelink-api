@@ -1,5 +1,29 @@
 inherit_from: .rubocop_todo.yml
 
+Layout/LineLength:
+  Exclude:
+    - "config/initializers/devise.rb"
+
+Metrics/AbcSize:
+  Exclude:
+    - "db/migrate/20220912024024_devise_token_auth_create_users.rb"
+
+Style/HashSyntax:
+  Exclude:
+    - "db/migrate/20220912024024_devise_token_auth_create_users.rb"
+
+Metrics/MethodLength:
+  Exclude:
+    - "db/migrate/20220912024024_devise_token_auth_create_users.rb"
+
+Style/SymbolArray:
+  Exclude:
+    - "db/migrate/20220912024024_devise_token_auth_create_users.rb"
+
+Layout/TrailingWhitespace:
+  Exclude:
+    - "db/migrate/20220912024024_devise_token_auth_create_users.rb"
+
 require:
   - rubocop-rails
   - rubocop-rspec
