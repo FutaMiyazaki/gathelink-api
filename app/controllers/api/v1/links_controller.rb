@@ -3,16 +3,16 @@ class Api::V1::LinksController < ApplicationController
 
   def index
     links = Link.all
-    render status: 200, json: { status: 200, data: links }
+    render status: :ok, json: { status: 200, data: links }
   end
 
   def create
     if api_v1_user_signed_in?
       link = current_api_v1_user.links.build(link_params)
       if link.save
-        render status: 200, json: { status: 200, data: link }
+        render status: :ok, json: { status: 200, data: link }
       else
-        render status: 400, json: { status: 400, data: link.errors }
+        render status: :bad_request, json: { status: 400, data: link.errors }
       end
     else
       render json: { message: "ログインしてください" }
@@ -22,9 +22,9 @@ class Api::V1::LinksController < ApplicationController
   def update
     link = Link.find(params[:id])
     if link.update(link_params)
-      render status: 200, json: { status: 200, data: link }
+      render status: :ok, json: { status: 200, data: link }
     else
-      render status: 404, json: { status: 404, data: link.errors, message: "更新に失敗しました" }
+      render status: :not_found, json: { status: 404, data: link.errors, message: "更新に失敗しました" }
     end
   end
 
@@ -32,9 +32,9 @@ class Api::V1::LinksController < ApplicationController
     link = Link.find(params[:id])
     if current_api_v1_user.id == link.user_id
       link.destroy
-      render status: 200, json: { status: 200, message: "削除に成功しました" }
+      render status: :ok, json: { status: 200, message: "削除に成功しました" }
     else
-      render status: 404, json: { status: 404, message: "削除に失敗しました" }
+      render status: :not_found, json: { status: 404, message: "削除に失敗しました" }
     end
   end
 
