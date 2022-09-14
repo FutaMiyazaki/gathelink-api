@@ -1,5 +1,9 @@
 inherit_from: .rubocop_todo.yml
 
+require:
+  - rubocop-rails
+  - rubocop-rspec
+
 Layout/LineLength:
   Exclude:
     - "config/initializers/devise.rb"
@@ -7,6 +11,15 @@ Layout/LineLength:
 Metrics/AbcSize:
   Exclude:
     - "db/migrate/20220912024024_devise_token_auth_create_users.rb"
+
+RSpec/ContextWording:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Max: 8
+
+RSpec/MultipleExpectations:
+  Enabled: false
 
 Style/HashSyntax:
   Exclude:
@@ -23,10 +36,6 @@ Style/SymbolArray:
 Layout/TrailingWhitespace:
   Exclude:
     - "db/migrate/20220912024024_devise_token_auth_create_users.rb"
-
-require:
-  - rubocop-rails
-  - rubocop-rspec
 
 Style/AsciiComments:
   Enabled: false
