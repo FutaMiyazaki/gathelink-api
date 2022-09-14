@@ -4,6 +4,39 @@ require:
   - rubocop-rails
   - rubocop-rspec
 
+Layout/LineLength:
+  Exclude:
+    - "config/initializers/devise.rb"
+
+Metrics/AbcSize:
+  Exclude:
+    - "db/migrate/20220912024024_devise_token_auth_create_users.rb"
+
+RSpec/ContextWording:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Max: 8
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+Style/HashSyntax:
+  Exclude:
+    - "db/migrate/20220912024024_devise_token_auth_create_users.rb"
+
+Metrics/MethodLength:
+  Exclude:
+    - "db/migrate/20220912024024_devise_token_auth_create_users.rb"
+
+Style/SymbolArray:
+  Exclude:
+    - "db/migrate/20220912024024_devise_token_auth_create_users.rb"
+
+Layout/TrailingWhitespace:
+  Exclude:
+    - "db/migrate/20220912024024_devise_token_auth_create_users.rb"
+
 Style/AsciiComments:
   Enabled: false
 
