@@ -7,11 +7,10 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins ["https://gathelink.app", "http://localhost:8080"]
-
+    origins "*"
     resource "*",
              headers: :any,
-             expose: %w[access-token uid client],
+             expose: %w[access-token expiry token-type uid client],
              methods: %i[get post put patch delete options head]
   end
 end
