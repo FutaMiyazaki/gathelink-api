@@ -1,0 +1,27 @@
+version: 2.1
+
+orbs:
+  aws-ecr: circleci/aws-ecr@8.1
+  aws-ecs: circleci/aws-ecs@3.2
+workflows:
+  rails-deploy:
+    jobs:
+      - aws-ecr/build-and-push-image:
+          region: AWS_REGION
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          create-repo: true
+          dockerfile: ./Dockerfile.prd
+          repo: MY_APP_PREFIX
+          registry-id: AWS_ECR_REGISTRY_ID
+          tag: "${CIRCLE_SHA1}"
+          filters:
+            branches:
+              only: main
+      - aws-ecs/deploy-service-update:
+          cluster: "${MY_APP_PREFIX}-cluster"
+          container-image-name-updates: "container=rails,tag=${CIRCLE_SHA1}"
+          family: "${MY_APP_PREFIX}-task"
+          service-name: "${MY_APP_PREFIX}-alb-service"
+          requires:
+            - aws-ecr/build-and-push-image
