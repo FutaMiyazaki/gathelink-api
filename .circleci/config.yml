@@ -7,12 +7,12 @@ workflows:
   rails-deploy:
     jobs:
       - aws-ecr/build-and-push-image:
-          region: AWS_REGION
+          region: "${AWS_REGION}"
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           create-repo: true
           dockerfile: ./Dockerfile.prd
-          repo: MY_APP_PREFIX
+          repo: "${MY_APP_PREFIX}"
           registry-id: AWS_ECR_REGISTRY_ID
           tag: "${CIRCLE_SHA1}"
           filters:
