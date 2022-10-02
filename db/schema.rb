@@ -10,9 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_12_094345) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_02_153448) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "folders", force: :cascade do |t|
+    t.string "name"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_folders_on_user_id"
+  end
 
   create_table "links", force: :cascade do |t|
     t.text "url", null: false
@@ -20,6 +28,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_12_094345) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.bigint "folder_id", null: false
+    t.index ["folder_id"], name: "index_links_on_folder_id"
     t.index ["user_id"], name: "index_links_on_user_id"
   end
 
@@ -48,5 +58,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_12_094345) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
+  add_foreign_key "folders", "users"
+  add_foreign_key "links", "folders"
   add_foreign_key "links", "users"
 end
