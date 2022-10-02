@@ -12,6 +12,10 @@ Metrics/AbcSize:
   Exclude:
     - "db/migrate/20220912024024_devise_token_auth_create_users.rb"
 
+Rails/NotNullColumn:
+  Exclude:
+    - "db/migrate/20221002153448_add_folder_ref_to_links.rb"
+
 RSpec/ContextWording:
   Enabled: false
 
