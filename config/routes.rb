@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       devise_scope :api_v1_user do
         post "auth/guest_sign_in", to: "auth/sessions#guest_sign_in"
       end
+      resources :folders, only: %i[index show create update destroy]
       resources :links, only: %i[index create update destroy]
       get "health_check", to: "health_check#index"
     end
