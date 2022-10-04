@@ -8,6 +8,7 @@ class User < ApplicationRecord
   include DeviseTokenAuth::Concerns::User
 
   has_many :links, dependent: :destroy
+  has_many :folders, dependent: :destroy
 
   validates :name, length: { maximum: 20 }
 
