@@ -12,7 +12,8 @@ RSpec.describe FolderFavorite, type: :model do
   end
 
   describe 'Validation' do
-    let(:folder_favorite) { create(:folder_favorite) }
+    let!(:folder_favorite) { create(:folder_favorite) }
+
     it '全てのパラメータが正しい場合、有効である' do
       expect(folder_favorite).to be_valid
     end
