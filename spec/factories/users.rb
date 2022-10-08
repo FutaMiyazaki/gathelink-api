@@ -9,5 +9,11 @@ FactoryBot.define do
         user.folders << build(:folder, name: "テストユーザのフォルダ")
       end
     end
+
+    trait :with_favorite_folders do
+      after(:build) do |user|
+        user.favorite_folders << build(:folder_favorite)
+      end
+    end
   end
 end
