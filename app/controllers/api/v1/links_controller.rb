@@ -11,7 +11,7 @@ class Api::V1::LinksController < ApplicationController
   def create
     link = current_api_v1_user.links.build(link_params)
     if link.save
-      render status: :ok, json: { data: link }
+      render status: :created, json: { data: link }
     else
       render status: :internal_server_error, json: { data: link.errors, message: "リンクの作成に失敗しました" }
     end
@@ -19,7 +19,7 @@ class Api::V1::LinksController < ApplicationController
 
   def update
     if @link.update(link_params)
-      render status: :ok, json: { data: @link }
+      render status: :created, json: { data: @link }
     else
       render status: :internal_server_error, json: { data: @link.errors, message: "更新に失敗しました" }
     end
@@ -27,7 +27,7 @@ class Api::V1::LinksController < ApplicationController
 
   def destroy
     if @link.destroy
-      render status: :ok, json: { message: "削除に成功しました" }
+      render status: :no_content
     else
       render status: :internal_server_error, json: { data: @link.errors, message: "削除に失敗しました" }
     end

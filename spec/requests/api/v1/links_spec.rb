@@ -21,7 +21,7 @@ RSpec.describe "Api::V1::Links", type: :request do
            params: { link:
             { url: "https://gathelink.app", title: "gathelinkのurlです", folder_id: folder.id } },
            headers: auth_token
-      expect(response).to have_http_status(:success)
+      expect(response).to have_http_status(:created)
     end
 
     it "ヘッダに認証情報が存在しない場合、リクエストが失敗すること" do
@@ -42,7 +42,7 @@ RSpec.describe "Api::V1::Links", type: :request do
     it "リクエストが成功すること" do
       patch api_v1_link_path(link.id), params: { link: { url: "https://gathelink.app/new", title: "urlを変更しました" } },
                                        headers: auth_token
-      expect(response).to have_http_status(:success)
+      expect(response).to have_http_status(:created)
     end
 
     it "ヘッダに認証情報が存在しない場合、リクエストが失敗すること" do
@@ -61,7 +61,7 @@ RSpec.describe "Api::V1::Links", type: :request do
   describe "DELETE /api/v1/links" do
     it "リクエストが成功すること" do
       delete api_v1_link_path(link.id), headers: auth_token
-      expect(response).to have_http_status(:success)
+      expect(response).to have_http_status(:no_content)
     end
 
     it "ヘッダに認証情報が存在しない場合、リクエストが失敗すること" do
