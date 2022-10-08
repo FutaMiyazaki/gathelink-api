@@ -5,23 +5,23 @@ class Api::V1::LinksController < ApplicationController
 
   def index
     links = Link.all
-    render status: :ok, json: { data: links }
+    render status: :ok, json: links
   end
 
   def create
     link = current_api_v1_user.links.build(link_params)
     if link.save
-      render status: :created, json: { data: link }
+      render status: :created, json: link
     else
-      render status: :internal_server_error, json: { data: link.errors, message: "リンクの作成に失敗しました" }
+      render status: :internal_server_error, json: link.errors
     end
   end
 
   def update
     if @link.update(link_params)
-      render status: :created, json: { data: @link }
+      render status: :created, json: @link
     else
-      render status: :internal_server_error, json: { data: @link.errors, message: "更新に失敗しました" }
+      render status: :internal_server_error, json: @link.errors
     end
   end
 
@@ -29,7 +29,7 @@ class Api::V1::LinksController < ApplicationController
     if @link.destroy
       render status: :no_content
     else
-      render status: :internal_server_error, json: { data: @link.errors, message: "削除に失敗しました" }
+      render status: :internal_server_error, json: @link.errors
     end
   end
 

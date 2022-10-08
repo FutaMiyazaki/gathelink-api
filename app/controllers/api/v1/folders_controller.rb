@@ -12,24 +12,24 @@ class Api::V1::FoldersController < ApplicationController
 
   def show
     folder = Folder.find(params[:id])
-    render status: :ok, json: { data: folder.as_json(include: [{ user: { only: %i[id name] } },
-                                                               { links: { expect: %i[user_id] } }]) }
+    render status: :ok, json: folder.as_json(include: [{ user: { only: %i[id name] } },
+                                                       { links: { expect: %i[user_id] } }])
   end
 
   def create
     folder = current_api_v1_user.folders.build(folder_params)
     if folder.save
-      render status: :created, json: { data: folder.as_json(only: :id), message: "フォルダを作成しました" }
+      render status: :created, json: folder.as_json(only: %i[id name])
     else
-      render status: :internal_server_error, json: { data: folder.errors, message: "フォルダの作成に失敗しました" }
+      render status: :internal_server_error, json: folder.errors
     end
   end
 
   def update
     if @folder.update(folder_params)
-      render status: :created, json: { data: @folder.as_json(only: :id), message: "更新に成功しました" }
+      render status: :created, json: @folder.as_json(only: :id)
     else
-      render status: :internal_server_error, json: { data: @folder.errors, message: "更新に失敗しました" }
+      render status: :internal_server_error, json: @folder.errors
     end
   end
 
@@ -37,7 +37,7 @@ class Api::V1::FoldersController < ApplicationController
     if @folder.destroy
       render status: :no_content
     else
-      render status: :internal_server_error, json: { data: @folder.errors, message: "削除に失敗しました" }
+      render status: :internal_server_error, json: @folder.errors
     end
   end
 
