@@ -8,6 +8,7 @@ Rails.application.routes.draw do
         post "auth/guest_sign_in", to: "auth/sessions#guest_sign_in"
       end
       resources :folders, only: %i[index show create update destroy]
+      resource :folder_favorites, only: %i[create destroy]
       resources :links, only: %i[index create update destroy]
       get "health_check", to: "health_check#index"
     end

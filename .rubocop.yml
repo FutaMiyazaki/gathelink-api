@@ -33,10 +33,6 @@ Metrics/MethodLength:
   Exclude:
     - "db/migrate/20220912024024_devise_token_auth_create_users.rb"
 
-Style/SymbolArray:
-  Exclude:
-    - "db/migrate/20220912024024_devise_token_auth_create_users.rb"
-
 Layout/TrailingWhitespace:
   Exclude:
     - "db/migrate/20220912024024_devise_token_auth_create_users.rb"
@@ -56,6 +52,15 @@ Style/Documentation:
 
 Style/FrozenStringLiteralComment:
   Enabled: false
+
+Style/GuardClause:
+  Exclude:
+    - "app/controllers/api/v1/folder_favorites_controller.rb"
+
+Style/SymbolArray:
+  Exclude:
+    - "db/migrate/20220912024024_devise_token_auth_create_users.rb"
+    - "db/migrate/20221005034917_create_folder_favorites.rb"
 
 Style/StringLiterals:
   Enabled: false
