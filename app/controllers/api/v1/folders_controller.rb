@@ -49,6 +49,6 @@ class Api::V1::FoldersController < ApplicationController
 
   def correct_user
     @folder = Folder.find(params[:id])
-    render status: :bad_request, json: { message: "不正なリクエストです" } if current_api_v1_user.id != @folder.user_id
+    render status: :forbidden, json: { message: "不正なリクエストです" } if current_api_v1_user.id != @folder.user_id
   end
 end

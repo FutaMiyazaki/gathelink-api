@@ -34,7 +34,7 @@ RSpec.describe "Api::V1::Links", type: :request do
       post api_v1_links_path,
            params: { link: { url: "https://gathelink.app", title: "gathelinkのurlです", folder_id: unrelated_folder.id } },
            headers: auth_token
-      expect(response).to have_http_status(:bad_request)
+      expect(response).to have_http_status(:forbidden)
     end
   end
 
@@ -54,7 +54,7 @@ RSpec.describe "Api::V1::Links", type: :request do
       patch api_v1_link_path(unrelated_link.id),
             params: { link: { url: "https://gathelink.app/new", title: "urlを変更しました" } },
             headers: auth_token
-      expect(response).to have_http_status(:bad_request)
+      expect(response).to have_http_status(:forbidden)
     end
   end
 
@@ -71,7 +71,7 @@ RSpec.describe "Api::V1::Links", type: :request do
 
     it "所有者でない場合、リクエストが失敗すること" do
       delete api_v1_link_path(unrelated_link.id), headers: auth_token
-      expect(response).to have_http_status(:bad_request)
+      expect(response).to have_http_status(:forbidden)
     end
   end
 end

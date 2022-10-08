@@ -39,7 +39,7 @@ RSpec.describe "Api::V1::Folders", type: :request do
 
     it "所有者でない場合、リクエストが失敗すること" do
       patch api_v1_folder_path(unrelated_folder.id), params: { folder: { name: "フォルダ名を変更" } }, headers: auth_token
-      expect(response).to have_http_status(:bad_request)
+      expect(response).to have_http_status(:forbidden)
     end
   end
 
@@ -56,7 +56,7 @@ RSpec.describe "Api::V1::Folders", type: :request do
 
     it "所有者でない場合、リクエストが失敗すること" do
       delete api_v1_folder_path(unrelated_folder.id), headers: auth_token
-      expect(response).to have_http_status(:bad_request)
+      expect(response).to have_http_status(:forbidden)
     end
   end
 end
