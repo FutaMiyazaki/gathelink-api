@@ -59,4 +59,16 @@ RSpec.describe "Api::V1::Folders", type: :request do
       expect(response).to have_http_status(:forbidden)
     end
   end
+
+  describe "GET /api/v1/my_folder" do
+    it "リクエストが成功すること" do
+      get api_v1_my_folder_list_path, headers: auth_token
+      expect(response).to have_http_status(:success)
+    end
+
+    it "ヘッダに認証情報が存在しない場合、リクエストが失敗すること" do
+      get api_v1_my_folder_list_path
+      expect(response).to have_http_status(:unauthorized)
+    end
+  end
 end

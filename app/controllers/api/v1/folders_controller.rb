@@ -1,5 +1,5 @@
 class Api::V1::FoldersController < ApplicationController
-  before_action :authenticate_api_v1_user!, only: %i[create update destroy]
+  before_action :authenticate_api_v1_user!, only: %i[create update destroy my_folder_list]
   before_action :correct_user, only: %i[update destroy]
 
   def index
@@ -12,7 +12,7 @@ class Api::V1::FoldersController < ApplicationController
 
   def show
     folder = Folder.find(params[:id])
-    render status: :ok, json: folder.as_json(include: [{ user: { only: %i[id name] } },
+    render status: :ok, json: folder.as_json(include: [{ user: { only: %i[id name email] } },
                                                        { links: { expect: %i[user_id] } }])
   end
 
@@ -39,6 +39,13 @@ class Api::V1::FoldersController < ApplicationController
     else
       render status: :internal_server_error, json: @folder.errors
     end
+  end
+
+  def my_folder_list
+    folders = current_api_v1_user.folders
+    render status: :ok, json: folders.as_json(include: [
+                                                { links: { only: %i[id title url] } }
+                                              ])
   end
 
   private
