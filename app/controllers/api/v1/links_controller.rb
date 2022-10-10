@@ -11,7 +11,7 @@ class Api::V1::LinksController < ApplicationController
   def create
     link = current_api_v1_user.links.build(link_params)
     if link.save
-      render status: :created, json: link
+      render status: :created, json: @folder.as_json(include: [{ links: { expect: %i[user_id created_at] } }])
     else
       render status: :internal_server_error, json: link.errors
     end
@@ -40,8 +40,8 @@ class Api::V1::LinksController < ApplicationController
   end
 
   def correct_user_folder
-    folder = Folder.find(link_params[:folder_id])
-    render status: :forbidden, json: { message: "不正なリクエストです" } if current_api_v1_user.id != folder.user_id
+    @folder = Folder.find(link_params[:folder_id])
+    render status: :forbidden, json: { message: "不正なリクエストです" } if current_api_v1_user.id != @folder.user_id
   end
 
   def correct_user_link
