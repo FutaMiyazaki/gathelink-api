@@ -1,6 +1,6 @@
 class Api::V1::LinksController < ApplicationController
   before_action :authenticate_api_v1_user!, only: %i[create update destroy]
-  before_action :correct_user_folder, only: %i[create]
+  before_action :correct_user_folder, only: %i[create update]
   before_action :correct_user_link, only: %i[update destroy]
 
   def index
@@ -19,7 +19,7 @@ class Api::V1::LinksController < ApplicationController
 
   def update
     if @link.update(link_params)
-      render status: :created, json: @link
+      render status: :ok, json: @folder.as_json(include: [{ links: { expect: %i[user_id created_at] } }])
     else
       render status: :internal_server_error, json: @link.errors
     end

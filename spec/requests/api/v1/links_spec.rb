@@ -4,6 +4,7 @@ RSpec.describe "Api::V1::Links", type: :request do
   let!(:unrelated_folder) { create(:folder) }
   let!(:user) { create(:user, :with_folders) }
   let!(:auth_token) { user.create_new_auth_token }
+  let!(:folder) { create(:folder, user_id: user.id) }
   let!(:link) { create(:link, user_id: user.id) }
   let!(:unrelated_link) { create(:link) }
 
@@ -40,19 +41,23 @@ RSpec.describe "Api::V1::Links", type: :request do
 
   describe "PATCH /api/v1/links" do
     it "リクエストが成功すること" do
-      patch api_v1_link_path(link.id), params: { link: { url: "https://gathelink.app/new", title: "urlを変更しました" } },
+      patch api_v1_link_path(link.id), params: { link: { url: "https://gathelink.app/new",
+                                                         title: "urlを変更しました",
+                                                         folder_id: folder.id } },
                                        headers: auth_token
-      expect(response).to have_http_status(:created)
+      expect(response).to have_http_status(:ok)
     end
 
     it "ヘッダに認証情報が存在しない場合、リクエストが失敗すること" do
-      patch api_v1_link_path(link.id), params: { link: { url: "https://gathelink.app/new", title: "urlを変更しました" } }
+      patch api_v1_link_path(link.id), params: { link: { url: "https://gathelink.app/new",
+                                                         title: "urlを変更しました",
+                                                         folder_id: folder.id } }
       expect(response).to have_http_status(:unauthorized)
     end
 
     it "所有者でない場合、リクエストが失敗すること" do
       patch api_v1_link_path(unrelated_link.id),
-            params: { link: { url: "https://gathelink.app/new", title: "urlを変更しました" } },
+            params: { link: { url: "https://gathelink.app/new", title: "urlを変更しました", folder_id: unrelated_folder.id } },
             headers: auth_token
       expect(response).to have_http_status(:forbidden)
     end

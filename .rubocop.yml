@@ -25,6 +25,10 @@ RSpec/ExampleLength:
 RSpec/MultipleExpectations:
   Enabled: false
 
+RSpec/MultipleMemoizedHelpers:
+  Exclude:
+    - "spec/requests/api/v1/links_spec.rb"
+
 Style/HashSyntax:
   Exclude:
     - "db/migrate/20220912024024_devise_token_auth_create_users.rb"
