@@ -10,7 +10,7 @@ Rails.application.routes.draw do
       resources :folders, only: %i[index show create update destroy]
       get "my_folder_list", to: "folders#my_folder_list"
       resource :folder_favorites, only: %i[create destroy]
-      resources :links, only: %i[index create update destroy]
+      resources :links, only: %i[index show create update destroy]
       get "health_check", to: "health_check#index"
     end
   end

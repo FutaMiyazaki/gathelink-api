@@ -15,6 +15,23 @@ RSpec.describe "Api::V1::Links", type: :request do
     end
   end
 
+  describe "GET /api/v1/links/:id" do
+    it "リクエストが成功すること" do
+      get api_v1_link_path(link.id), headers: auth_token
+      expect(response).to have_http_status(:success)
+    end
+
+    it "ヘッダに認証情報が存在しない場合、リクエストが失敗すること" do
+      get api_v1_link_path(link.id)
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "リンクの作成ユーザと異なるユーザからのリクエストの場合、リクエストが失敗すること" do
+      get api_v1_link_path(unrelated_link.id), headers: auth_token
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
   describe "POST /api/v1/links" do
     it "リクエストが成功すること" do
       folder = user.folders.find_by(name: "テストユーザのフォルダ")

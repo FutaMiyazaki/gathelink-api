@@ -1,11 +1,20 @@
 class Api::V1::LinksController < ApplicationController
-  before_action :authenticate_api_v1_user!, only: %i[create update destroy]
+  before_action :authenticate_api_v1_user!, only: %i[show create update destroy]
   before_action :correct_user_folder, only: %i[create update]
-  before_action :correct_user_link, only: %i[update destroy]
+  before_action :correct_user_link, only: %i[show update destroy]
 
   def index
     links = Link.all
     render status: :ok, json: links
+  end
+
+  def show
+    link = Link.find(params[:id])
+    folders = current_api_v1_user.folders
+    render status: :ok, json: {
+      link: link.as_json(only: %i[id title url]),
+      folders: folders.as_json(only: %i[id name])
+    }
   end
 
   def create
@@ -19,7 +28,7 @@ class Api::V1::LinksController < ApplicationController
 
   def update
     if @link.update(link_params)
-      render status: :ok, json: @folder.as_json(include: [{ links: { expect: %i[user_id created_at] } }])
+      render status: :ok, json: @link.as_json(only: %i[id title])
     else
       render status: :internal_server_error, json: @link.errors
     end
