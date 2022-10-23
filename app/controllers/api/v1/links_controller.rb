@@ -28,7 +28,7 @@ class Api::V1::LinksController < ApplicationController
 
   def update
     if @link.update(link_params)
-      render status: :ok, json: @link.as_json(only: %i[id title])
+      render status: :no_content
     else
       render status: :internal_server_error, json: @link.errors
     end

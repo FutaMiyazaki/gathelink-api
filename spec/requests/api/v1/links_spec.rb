@@ -62,7 +62,7 @@ RSpec.describe "Api::V1::Links", type: :request do
                                                          title: "urlを変更しました",
                                                          folder_id: folder.id } },
                                        headers: auth_token
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_http_status(:no_content)
     end
 
     it "ヘッダに認証情報が存在しない場合、リクエストが失敗すること" do
