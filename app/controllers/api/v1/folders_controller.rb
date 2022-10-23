@@ -42,7 +42,12 @@ class Api::V1::FoldersController < ApplicationController
   end
 
   def my_folder_list
-    folders = current_api_v1_user.folders
+    folders = case params[:sort]
+              when "latest"
+                current_api_v1_user.folders.latest
+              else
+                current_api_v1_user.folders.old
+              end
     render status: :ok, json: folders.as_json(include: [
                                                 { links: { only: %i[id title url] } }
                                               ])
