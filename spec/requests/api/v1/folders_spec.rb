@@ -14,6 +14,13 @@ RSpec.describe "Api::V1::Folders", type: :request do
     end
   end
 
+  describe "GET /api/v1/folders/:id" do
+    it "リクエストが成功すること" do
+      get api_v1_folder_path(folder.id)
+      expect(response).to have_http_status(:success)
+    end
+  end
+
   describe "POST /api/v1/folders" do
     it "リクエストが成功すること" do
       post api_v1_folders_path, params: { folder: params }, headers: auth_token
