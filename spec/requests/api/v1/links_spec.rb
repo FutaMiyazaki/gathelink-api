@@ -56,7 +56,7 @@ RSpec.describe "Api::V1::Links", type: :request do
     end
   end
 
-  describe "PATCH /api/v1/links" do
+  describe "PATCH /api/v1/links/:id" do
     it "リクエストが成功すること" do
       patch api_v1_link_path(link.id), params: { link: { url: "https://gathelink.app/new",
                                                          title: "urlを変更しました",
@@ -80,7 +80,7 @@ RSpec.describe "Api::V1::Links", type: :request do
     end
   end
 
-  describe "DELETE /api/v1/links" do
+  describe "DELETE /api/v1/links/:id" do
     it "リクエストが成功すること" do
       delete api_v1_link_path(link.id), headers: auth_token
       expect(response).to have_http_status(:no_content)

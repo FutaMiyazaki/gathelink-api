@@ -26,7 +26,7 @@ RSpec.describe "Api::V1::Folders", type: :request do
     end
   end
 
-  describe "PATCH /api/v1/folders" do
+  describe "PATCH /api/v1/folders/:id" do
     it "リクエストが成功すること" do
       patch api_v1_folder_path(folder.id), params: { folder: { name: "フォルダ名を変更" } }, headers: auth_token
       expect(response).to have_http_status(:no_content)
@@ -43,7 +43,7 @@ RSpec.describe "Api::V1::Folders", type: :request do
     end
   end
 
-  describe "DELETE /api/v1/folders" do
+  describe "DELETE /api/v1/folders/:id" do
     it "リクエストが成功すること" do
       delete api_v1_folder_path(folder.id), headers: auth_token
       expect(response).to have_http_status(:no_content)
