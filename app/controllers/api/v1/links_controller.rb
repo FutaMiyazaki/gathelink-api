@@ -1,46 +1,60 @@
 class Api::V1::LinksController < ApplicationController
-  before_action :authenticate_api_v1_user!, only: %i[create update destroy]
+  before_action :authenticate_api_v1_user!, only: %i[show create update destroy]
+  before_action :correct_user_folder, only: %i[create update]
+  before_action :correct_user_link, only: %i[show update destroy]
 
   def index
     links = Link.all
-    render status: :ok, json: { status: 200, data: links }
+    render status: :ok, json: links
+  end
+
+  def show
+    link = Link.find(params[:id])
+    folders = current_api_v1_user.folders
+    render status: :ok, json: {
+      link: link.as_json(only: %i[id title url]),
+      folders: folders.as_json(only: %i[id name])
+    }
   end
 
   def create
-    if api_v1_user_signed_in?
-      link = current_api_v1_user.links.build(link_params)
-      if link.save
-        render status: :ok, json: { status: 200, data: link }
-      else
-        render status: :bad_request, json: { status: 400, data: link.errors }
-      end
+    link = current_api_v1_user.links.build(link_params)
+    if link.save
+      render status: :created, json: @folder.as_json(include: [{ links: { expect: %i[user_id created_at] } }])
     else
-      render json: { message: "ログインしてください" }
+      render status: :internal_server_error, json: link.errors
     end
   end
 
   def update
-    link = Link.find(params[:id])
-    if link.update(link_params)
-      render status: :ok, json: { status: 200, data: link }
+    if @link.update(link_params)
+      render status: :no_content
     else
-      render status: :not_found, json: { status: 404, data: link.errors, message: "更新に失敗しました" }
+      render status: :internal_server_error, json: @link.errors
     end
   end
 
   def destroy
-    link = Link.find(params[:id])
-    if current_api_v1_user.id == link.user_id
-      link.destroy
-      render status: :ok, json: { status: 200, message: "削除に成功しました" }
+    if @link.destroy
+      render status: :no_content
     else
-      render status: :not_found, json: { status: 404, message: "削除に失敗しました" }
+      render status: :internal_server_error, json: @link.errors
     end
   end
 
   private
 
   def link_params
-    params.require(:link).permit(:url, :title)
+    params.require(:link).permit(:url, :title, :folder_id)
+  end
+
+  def correct_user_folder
+    @folder = Folder.find(link_params[:folder_id])
+    render status: :forbidden, json: { message: "不正なリクエストです" } if current_api_v1_user.id != @folder.user_id
+  end
+
+  def correct_user_link
+    @link = Link.find(params[:id])
+    render status: :forbidden, json: { message: "不正なリクエストです" } if current_api_v1_user.id != @link.user_id
   end
 end

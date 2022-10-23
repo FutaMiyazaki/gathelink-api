@@ -6,6 +6,10 @@ class ApplicationController < ActionController::API
     I18n.locale = :ja
   end
 
+  rescue_from ActiveRecord::RecordNotFound do
+    render json: { error: '404 not found' }, status: :not_found
+  end
+
   private
 
   def configure_permitted_parameters
