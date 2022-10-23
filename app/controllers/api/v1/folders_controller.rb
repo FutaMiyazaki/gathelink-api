@@ -27,7 +27,7 @@ class Api::V1::FoldersController < ApplicationController
 
   def update
     if @folder.update(folder_params)
-      render status: :created, json: @folder.as_json(only: :id)
+      render status: :no_content
     else
       render status: :internal_server_error, json: @folder.errors
     end

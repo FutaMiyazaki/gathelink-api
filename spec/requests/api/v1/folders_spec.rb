@@ -29,7 +29,7 @@ RSpec.describe "Api::V1::Folders", type: :request do
   describe "PATCH /api/v1/folders" do
     it "リクエストが成功すること" do
       patch api_v1_folder_path(folder.id), params: { folder: { name: "フォルダ名を変更" } }, headers: auth_token
-      expect(response).to have_http_status(:created)
+      expect(response).to have_http_status(:no_content)
     end
 
     it "ヘッダに認証情報が存在しない場合、リクエストが失敗すること" do
