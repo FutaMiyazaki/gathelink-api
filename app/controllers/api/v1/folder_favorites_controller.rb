@@ -1,10 +1,9 @@
 class Api::V1::FolderFavoritesController < ApplicationController
   before_action :authenticate_api_v1_user!
-  before_action :correct_user
   before_action :set_folder
 
   def create
-    favorite = FolderFavorite.new(favorite_params)
+    favorite = FolderFavorite.new(folder_id: params[:folder_id], user_id: current_api_v1_user.id)
     if favorite.save
       render status: :created,
              json: current_api_v1_user.as_json(include: [{ favorite_folders: { expect: %i[created_at updated_at] } }],
@@ -15,9 +14,9 @@ class Api::V1::FolderFavoritesController < ApplicationController
   end
 
   def destroy
-    favorite = current_api_v1_user.folder_favorites.find_by!(folder_id: @folder.id)
+    favorite = current_api_v1_user.folder_favorites.find_by!(folder_id: params[:folder_id])
     if favorite.destroy
-      render status: :ok,
+      render status: :no_content,
              json: current_api_v1_user.as_json(include: [{ favorite_folders: { expect: %i[created_at updated_at] } }],
                                                only: %i[id])
     else
@@ -28,18 +27,12 @@ class Api::V1::FolderFavoritesController < ApplicationController
   private
 
   def favorite_params
-    params.require(:favorite).permit(:user_id, :folder_id)
-  end
-
-  def correct_user
-    if current_api_v1_user.id.to_s != favorite_params[:user_id]
-      render status: :forbidden, json: { message: "不正なリクエストです" }
-    end
+    params.permit(:folder_id)
   end
 
   def set_folder
-    @folder = Folder.find(favorite_params[:folder_id])
-    if @folder.id.to_s != favorite_params[:folder_id]
+    @folder = Folder.find(params[:folder_id])
+    if @folder.id.to_s != params[:folder_id]
       render status: :forbidden,
              json: { message: "不正なリクエストです" }
     end
