@@ -4,7 +4,7 @@ RSpec.describe "Api::V1::Folders", type: :request do
   let!(:user) { create(:user, :with_folders) }
   let!(:auth_token) { user.create_new_auth_token }
   let!(:folder) { create(:folder, user_id: user.id) }
-  let!(:unrelated_folder) { create(:folder) }
+  let!(:others_folder) { create(:folder) }
   let!(:params) { { name: "gathelinkのフォルダ" } }
 
   describe "GET /api/v1/folders" do
@@ -45,7 +45,7 @@ RSpec.describe "Api::V1::Folders", type: :request do
     end
 
     it "所有者でない場合、リクエストが失敗すること" do
-      patch api_v1_folder_path(unrelated_folder.id), params: { folder: { name: "フォルダ名を変更" } }, headers: auth_token
+      patch api_v1_folder_path(others_folder.id), params: { folder: { name: "フォルダ名を変更" } }, headers: auth_token
       expect(response).to have_http_status(:forbidden)
     end
   end
@@ -62,7 +62,7 @@ RSpec.describe "Api::V1::Folders", type: :request do
     end
 
     it "所有者でない場合、リクエストが失敗すること" do
-      delete api_v1_folder_path(unrelated_folder.id), headers: auth_token
+      delete api_v1_folder_path(others_folder.id), headers: auth_token
       expect(response).to have_http_status(:forbidden)
     end
   end
