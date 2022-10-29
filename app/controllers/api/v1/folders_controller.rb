@@ -13,7 +13,8 @@ class Api::V1::FoldersController < ApplicationController
   def show
     folder = Folder.find(params[:id])
     render status: :ok, json: folder.as_json(include: [{ user: { only: %i[id name email] } },
-                                                       { links: { expect: %i[user_id] } }])
+                                                       { links: { expect: %i[user_id] } },
+                                                       { folder_favorites: { only: %i[id user_id] } }])
   end
 
   def create
