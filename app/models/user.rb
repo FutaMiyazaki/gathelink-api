@@ -10,7 +10,7 @@ class User < ApplicationRecord
   has_many :links, dependent: :destroy
   has_many :folders, dependent: :destroy
   has_many :folder_favorites, dependent: :destroy
-  has_many :favorite_folders, through: :folder_favorites, source: :folder
+  has_many :favorited_folders, through: :folder_favorites, source: :folder
 
   validates :name, length: { maximum: 20 }
 

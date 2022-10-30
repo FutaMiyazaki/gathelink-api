@@ -1,12 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe "Api::V1::Links", type: :request do
-  let!(:unrelated_folder) { create(:folder) }
+  let!(:others_folder) { create(:folder) }
   let!(:user) { create(:user, :with_folders) }
   let!(:auth_token) { user.create_new_auth_token }
   let!(:folder) { create(:folder, user_id: user.id) }
   let!(:link) { create(:link, user_id: user.id) }
-  let!(:unrelated_link) { create(:link) }
+  let!(:others_link) { create(:link) }
 
   describe "GET /api/v1/links" do
     it "リクエストが成功すること" do
@@ -27,7 +27,7 @@ RSpec.describe "Api::V1::Links", type: :request do
     end
 
     it "リンクの作成ユーザと異なるユーザからのリクエストの場合、リクエストが失敗すること" do
-      get api_v1_link_path(unrelated_link.id), headers: auth_token
+      get api_v1_link_path(others_link.id), headers: auth_token
       expect(response).to have_http_status(:forbidden)
     end
   end
@@ -50,7 +50,7 @@ RSpec.describe "Api::V1::Links", type: :request do
 
     it "フォルダ所収者と異なるユーザの場合、リクエストが失敗すること" do
       post api_v1_links_path,
-           params: { link: { url: "https://gathelink.app", title: "gathelinkのurlです", folder_id: unrelated_folder.id } },
+           params: { link: { url: "https://gathelink.app", title: "gathelinkのurlです", folder_id: others_folder.id } },
            headers: auth_token
       expect(response).to have_http_status(:forbidden)
     end
@@ -73,8 +73,8 @@ RSpec.describe "Api::V1::Links", type: :request do
     end
 
     it "所有者でない場合、リクエストが失敗すること" do
-      patch api_v1_link_path(unrelated_link.id),
-            params: { link: { url: "https://gathelink.app/new", title: "urlを変更しました", folder_id: unrelated_folder.id } },
+      patch api_v1_link_path(others_link.id),
+            params: { link: { url: "https://gathelink.app/new", title: "urlを変更しました", folder_id: others_folder.id } },
             headers: auth_token
       expect(response).to have_http_status(:forbidden)
     end
@@ -92,7 +92,7 @@ RSpec.describe "Api::V1::Links", type: :request do
     end
 
     it "所有者でない場合、リクエストが失敗すること" do
-      delete api_v1_link_path(unrelated_link.id), headers: auth_token
+      delete api_v1_link_path(others_link.id), headers: auth_token
       expect(response).to have_http_status(:forbidden)
     end
   end

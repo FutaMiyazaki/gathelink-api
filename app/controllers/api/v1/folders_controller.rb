@@ -13,7 +13,8 @@ class Api::V1::FoldersController < ApplicationController
   def show
     folder = Folder.find(params[:id])
     render status: :ok, json: folder.as_json(include: [{ user: { only: %i[id name email] } },
-                                                       { links: { expect: %i[user_id] } }])
+                                                       { links: { expect: %i[user_id] } },
+                                                       { folder_favorites: { only: %i[id user_id] } }])
   end
 
   def create
@@ -47,6 +48,18 @@ class Api::V1::FoldersController < ApplicationController
                 current_api_v1_user.folders.latest
               else
                 current_api_v1_user.folders.old
+              end
+    render status: :ok, json: folders.as_json(include: [
+                                                { links: { only: %i[id title url] } }
+                                              ])
+  end
+
+  def favorited_folders_list
+    folders = case params[:sort]
+              when "latest"
+                current_api_v1_user.favorited_folders.latest
+              else
+                current_api_v1_user.favorited_folders.old
               end
     render status: :ok, json: folders.as_json(include: [
                                                 { links: { only: %i[id title url] } }
