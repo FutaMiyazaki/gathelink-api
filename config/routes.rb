@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       end
       resources :folders, only: %i[index show create update destroy]
       get "my_folder_list", to: "folders#my_folder_list"
+      get "favorited_folders_list", to: "folders#favorited_folders_list"
       resources :folder_favorites, only: %i[create destroy]
       resources :links, only: %i[index show create update destroy]
       get "health_check", to: "health_check#index"

@@ -54,6 +54,18 @@ class Api::V1::FoldersController < ApplicationController
                                               ])
   end
 
+  def favorited_folders_list
+    folders = case params[:sort]
+              when "latest"
+                current_api_v1_user.favorited_folders.latest
+              else
+                current_api_v1_user.favorited_folders.old
+              end
+    render status: :ok, json: folders.as_json(include: [
+                                                { links: { only: %i[id title url] } }
+                                              ])
+  end
+
   private
 
   def folder_params

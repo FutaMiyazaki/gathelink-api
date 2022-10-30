@@ -6,9 +6,11 @@ class Api::V1::FolderFavoritesController < ApplicationController
   def create
     favorite = FolderFavorite.new(folder_id: params[:folder_id], user_id: current_api_v1_user.id)
     if favorite.save
-      render status: :created,
-             json: current_api_v1_user.as_json(include: [{ favorite_folders: { expect: %i[created_at updated_at] } }],
-                                               only: %i[id])
+      folders = current_api_v1_user.favorited_folders.old
+      render status: :created, json: {
+        favorite: favorite.as_json(only: %i[id user_id]),
+        folders: folders.as_json(include: [{ links: { only: %i[id title url] } }])
+      }
     else
       render status: :internal_server_error, json: favorite.errors
     end
@@ -16,9 +18,7 @@ class Api::V1::FolderFavoritesController < ApplicationController
 
   def destroy
     if @favorite.destroy
-      render status: :no_content,
-             json: current_api_v1_user.as_json(include: [{ favorite_folders: { expect: %i[created_at updated_at] } }],
-                                               only: %i[id])
+      render status: :no_content
     else
       render status: :internal_server_error, json: favorite.errors
     end
