@@ -6,7 +6,7 @@ FactoryBot.define do
 
     trait :with_folders do
       after(:build) do |user|
-        user.folders << build(:folder, name: "テストユーザのフォルダ")
+        user.folders << build(:folder, name: "テストユーザのフォルダ", description: "テストユーザのフォルダです")
       end
     end
 

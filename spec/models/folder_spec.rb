@@ -41,5 +41,30 @@ RSpec.describe Folder, type: :model do
       folder = build(:folder, name: ("a" * 30).to_s)
       expect(folder).to be_valid
     end
+
+    it 'descriptionがnilの場合、有効である' do
+      folder = build(:folder, description: nil)
+      expect(folder).to be_valid
+    end
+
+    it 'descriptionが空白の場合、有効である' do
+      folder = build(:folder, description: " ")
+      expect(folder).to be_valid
+    end
+
+    it 'descriptionが空文字の場合、有効である' do
+      folder = build(:folder, description: "")
+      expect(folder).to be_valid
+    end
+
+    it 'descriptioonが201文字以上の場合、無効である' do
+      folder = build(:folder, description: ("a" * 201).to_s)
+      expect(folder).to be_invalid
+    end
+
+    it 'descriptionが200文字以下の場合、有効である' do
+      folder = build(:folder, description: ("a" * 200).to_s)
+      expect(folder).to be_valid
+    end
   end
 end
