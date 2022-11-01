@@ -5,9 +5,9 @@ class Folder < ApplicationRecord
   has_many :links, dependent: :destroy
   has_many :folder_favorites, dependent: :destroy
 
+  validate :folders_count_must_be_within_limit
   validates :name, presence: true, length: { maximum: 30 }
   validates :description, length: { maximum: 200 }
-  validate :folders_count_must_be_within_limit
 
   scope :latest, -> { order(created_at: :desc) }
   scope :old, -> { order(created_at: :asc) }
