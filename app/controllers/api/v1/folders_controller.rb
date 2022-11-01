@@ -22,7 +22,7 @@ class Api::V1::FoldersController < ApplicationController
     if folder.save
       render status: :created, json: folder.as_json(only: %i[id name])
     else
-      render status: :internal_server_error, json: folder.errors
+      render status: :internal_server_error, json: folder.errors.messages
     end
   end
 
