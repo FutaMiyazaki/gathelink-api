@@ -20,7 +20,10 @@ class Api::V1::LinksController < ApplicationController
   def create
     link = current_api_v1_user.links.build(link_params)
     if link.save
-      render status: :created, json: @folder.as_json(include: [{ links: { expect: %i[user_id created_at] } }])
+      render status: :created, json: {
+        folder: @folder.as_json(only: %i[id]),
+        link: link.as_json(expect: %i[user_id created_at])
+      }
     else
       render status: :internal_server_error, json: link.errors
     end
