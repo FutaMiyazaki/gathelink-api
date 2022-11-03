@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :folder do
     association :user
-    name { "フォルダ名" }
+    name { "テストフォルダ" }
+    description { "これはテスト用のフォルダです" }
   end
 end
