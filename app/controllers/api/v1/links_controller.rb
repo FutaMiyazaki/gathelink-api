@@ -1,3 +1,6 @@
+require "mechanize"
+require "uri"
+
 class Api::V1::LinksController < ApplicationController
   before_action :authenticate_api_v1_user!, only: %i[show create update destroy]
   before_action :correct_user_folder, only: %i[create update]
@@ -19,6 +22,12 @@ class Api::V1::LinksController < ApplicationController
 
   def create
     link = current_api_v1_user.links.build(link_params)
+    if link.title.blank?
+      agent = Mechanize.new
+      page = agent.get(link.url)
+      link.title = page.title ? page.title : URI.parse(link.url).host
+    end
+
     if link.save
       render status: :created, json: {
         folder: @folder.as_json(only: %i[id]),
