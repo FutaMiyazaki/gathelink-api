@@ -24,8 +24,14 @@ class Api::V1::LinksController < ApplicationController
     link = current_api_v1_user.links.build(link_params)
     if link.title.blank?
       agent = Mechanize.new
-      page = agent.get(link.url)
-      link.title = page.title ? page.title : URI.parse(link.url).host
+      # HTML情報の取得でエラーが発生した場合、代わりにURLからタイトルを代入するために、例外処理を入れて無視させる
+      begin
+        page = agent.get(link.url)
+      rescue Timeout::Error
+      rescue Errno::EADDRNOTAVAIL
+      rescue Mechanize::ResponseCodeError
+      end
+      link.title = page&.title ? page.title : URI.parse(link.url).host
     end
 
     if link.save
