@@ -6,7 +6,7 @@ class Api::V1::FoldersController < ApplicationController
     folders = Folder.all
     render status: :ok, json: folders.as_json(include: [
                                                 { user: { only: %i[id name] } },
-                                                { links: { only: %i[id title url] } }
+                                                { links: { expect: %i[user_id] } }
                                               ])
   end
 
@@ -49,9 +49,7 @@ class Api::V1::FoldersController < ApplicationController
               else
                 current_api_v1_user.folders.old
               end
-    render status: :ok, json: folders.as_json(include: [
-                                                { links: { only: %i[id title url] } }
-                                              ])
+    render status: :ok, json: folders.as_json(include: :links)
   end
 
   def favorited_folders_list
@@ -61,9 +59,7 @@ class Api::V1::FoldersController < ApplicationController
               else
                 current_api_v1_user.favorited_folders.old
               end
-    render status: :ok, json: folders.as_json(include: [
-                                                { links: { only: %i[id title url] } }
-                                              ])
+    render status: :ok, json: folders.as_json(include: :links)
   end
 
   private
