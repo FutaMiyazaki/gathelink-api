@@ -12,7 +12,9 @@ class Folder < ApplicationRecord
   scope :latest, -> { order(created_at: :desc) }
   scope :old, -> { order(created_at: :asc) }
 
-  private
+  def old_order_links
+    links.old.as_json(expect: %i[user_id])
+  end
 
   def folders_count_must_be_within_limit
     errors.add(:base, "フォルダは #{MAX_FOLDERS_COUNT} 個まで作成可能です") if user.folders.count >= MAX_FOLDERS_COUNT

@@ -6,21 +6,25 @@ class Api::V1::FoldersController < ApplicationController
     folders = Folder.all
     render status: :ok, json: folders.as_json(include: [
                                                 { user: { only: %i[id name] } },
-                                                { links: { only: %i[id title url] } }
+                                                { links: { expect: %i[user_id] } }
                                               ])
   end
 
   def show
     folder = Folder.find(params[:id])
-    render status: :ok, json: folder.as_json(include: [{ user: { only: %i[id name email] } },
-                                                       { links: { expect: %i[user_id] } },
-                                                       { folder_favorites: { only: %i[id user_id] } }])
+    is_owner = api_v1_user_signed_in? ? folder.user_id == current_api_v1_user.id : false
+    render status: :ok, json: {
+      folder: folder.as_json({ include: [{ user: { only: %i[id name email] } },
+                                         { folder_favorites: { only: %i[id user_id] } }],
+                               methods: :old_order_links }),
+      is_owner:
+    }
   end
 
   def create
     folder = current_api_v1_user.folders.build(folder_params)
     if folder.save
-      render status: :created, json: folder.as_json(only: %i[id name])
+      render status: :created, json: folder.as_json(expect: %i[user_id])
     else
       render status: :internal_server_error, json: folder.errors
     end
@@ -49,9 +53,7 @@ class Api::V1::FoldersController < ApplicationController
               else
                 current_api_v1_user.folders.old
               end
-    render status: :ok, json: folders.as_json(include: [
-                                                { links: { only: %i[id title url] } }
-                                              ])
+    render status: :ok, json: folders.as_json(include: :links)
   end
 
   def favorited_folders_list
@@ -61,9 +63,7 @@ class Api::V1::FoldersController < ApplicationController
               else
                 current_api_v1_user.favorited_folders.old
               end
-    render status: :ok, json: folders.as_json(include: [
-                                                { links: { only: %i[id title url] } }
-                                              ])
+    render status: :ok, json: folders.as_json(include: :links)
   end
 
   private

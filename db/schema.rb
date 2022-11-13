@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_31_124846) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_08_121512) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -40,6 +40,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_31_124846) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.bigint "folder_id", null: false
+    t.text "image_url"
     t.index ["folder_id"], name: "index_links_on_folder_id"
     t.index ["user_id"], name: "index_links_on_user_id"
   end
