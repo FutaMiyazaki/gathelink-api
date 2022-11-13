@@ -14,10 +14,10 @@ class Api::V1::FoldersController < ApplicationController
     folder = Folder.find(params[:id])
     is_owner = api_v1_user_signed_in? ? folder.user_id == current_api_v1_user.id : false
     render status: :ok, json: {
-      folder: folder.as_json({include: [{ user: { only: %i[id name email] } },
-                                        { folder_favorites: { only: %i[id user_id] } }],
-                              methods: :old_order_links}),
-      is_owner: is_owner
+      folder: folder.as_json({ include: [{ user: { only: %i[id name email] } },
+                                         { folder_favorites: { only: %i[id user_id] } }],
+                               methods: :old_order_links }),
+      is_owner:
     }
   end
 

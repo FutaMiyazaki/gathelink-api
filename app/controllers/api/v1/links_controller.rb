@@ -22,22 +22,13 @@ class Api::V1::LinksController < ApplicationController
 
   def create
     link = current_api_v1_user.links.build(link_params)
-    agent = Mechanize.new
-
-    # HTML情報の取得でエラーが発生した場合、代わりにURLからタイトルを代入するために、例外処理を入れて無視させる
-    begin
-      page = agent.get(link.url)
-    rescue Timeout::Error
-    rescue Errno::EADDRNOTAVAIL
-    rescue Mechanize::ResponseCodeError
+    if scraping(link.url)
+      @page = scraping(link.url)
+      link["image_url"] = @page.at('meta[property="og:image"]')[:content] if @page&.at('meta[property="og:image"]')
     end
-
     if link.title.blank?
-      link.title = page&.title ? page.title : URI.parse(link.url).host
+      link.title = @page&.title ? @page.title : URI.parse(link.url).host
     end
-
-    link["image_url"] = page.at('meta[property="og:image"]')[:content] if page&.at('meta[property="og:image"]')
-
     if link.save!
       render status: :created, json: {
         folder: @folder.as_json(only: %i[id]),
@@ -51,23 +42,13 @@ class Api::V1::LinksController < ApplicationController
   def update
     if link_params[:title].blank? || @link.url != link_params[:url]
       @link.assign_attributes(link_params)
-      agent = Mechanize.new
-
-      # HTML情報の取得でエラーが発生した場合、代わりにURLからタイトルを代入するために、例外処理を入れて無視させる
-      begin
-        page = agent.get(link_params[:url])
-      rescue Timeout::Error
-      rescue Errno::EADDRNOTAVAIL
-      rescue Mechanize::ResponseCodeError
+      if scraping(link_params[:url]) && @page&.at('meta[property="og:image"]')
+        @link["image_url"] = @page.at('meta[property="og:image"]')[:content]
       end
-
-      if @link.title.blank?
-        @link.title = page&.title ? page.title : URI.parse(@link.url).host
+      if link_params[:title].blank?
+        @link.title = @page&.title ? @page.title : URI.parse(@link.url).host
       end
-
-      @link["image_url"] = page.at('meta[property="og:image"]')[:content] if page&.at('meta[property="og:image"]')
     end
-
     if @link.save
       render status: :no_content
     else
@@ -97,5 +78,15 @@ class Api::V1::LinksController < ApplicationController
   def correct_user_link
     @link = Link.find(params[:id])
     render status: :forbidden, json: { message: "不正なリクエストです" } if current_api_v1_user.id != @link.user_id
+  end
+
+  def scraping(url)
+    agent = Mechanize.new
+    # HTML情報の取得でエラーが発生した場合、代わりにURLからタイトルを代入するために、例外処理を入れて無視させる
+    begin
+      @page = agent.get(url)
+    rescue Timeout::Error, Errno::EADDRNOTAVAIL, Mechanize::ResponseCodeError
+      nil
+    end
   end
 end

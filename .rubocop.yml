@@ -10,7 +10,12 @@ Layout/LineLength:
 
 Metrics/AbcSize:
   Exclude:
+    - "app/controllers/api/v1/links_controller.rb"
     - "db/migrate/20220912024024_devise_token_auth_create_users.rb"
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - "app/controllers/api/v1/links_controller.rb"
 
 Rails/NotNullColumn:
   Exclude:
@@ -35,7 +40,12 @@ Style/HashSyntax:
 
 Metrics/MethodLength:
   Exclude:
+    - "app/controllers/api/v1/links_controller.rb"
     - "db/migrate/20220912024024_devise_token_auth_create_users.rb"
+
+Metrics/PerceivedComplexity:
+  Exclude:
+    - "app/controllers/api/v1/links_controller.rb"
 
 Layout/TrailingWhitespace:
   Exclude:
