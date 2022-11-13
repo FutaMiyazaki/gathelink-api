@@ -15,26 +15,30 @@ class Api::V1::LinksController < ApplicationController
     link = Link.find(params[:id])
     folders = current_api_v1_user.folders
     render status: :ok, json: {
-      link: link.as_json(only: %i[id title url]),
+      link: link.as_json,
       folders: folders.as_json(only: %i[id name])
     }
   end
 
   def create
     link = current_api_v1_user.links.build(link_params)
+    agent = Mechanize.new
+
+    # HTML情報の取得でエラーが発生した場合、代わりにURLからタイトルを代入するために、例外処理を入れて無視させる
+    begin
+      page = agent.get(link.url)
+    rescue Timeout::Error
+    rescue Errno::EADDRNOTAVAIL
+    rescue Mechanize::ResponseCodeError
+    end
+
     if link.title.blank?
-      agent = Mechanize.new
-      # HTML情報の取得でエラーが発生した場合、代わりにURLからタイトルを代入するために、例外処理を入れて無視させる
-      begin
-        page = agent.get(link.url)
-      rescue Timeout::Error
-      rescue Errno::EADDRNOTAVAIL
-      rescue Mechanize::ResponseCodeError
-      end
       link.title = page&.title ? page.title : URI.parse(link.url).host
     end
 
-    if link.save
+    link["image_url"] = page.at('meta[property="og:image"]')[:content] if page&.at('meta[property="og:image"]')
+
+    if link.save!
       render status: :created, json: {
         folder: @folder.as_json(only: %i[id]),
         link: link.as_json(expect: %i[user_id created_at])
@@ -45,10 +49,29 @@ class Api::V1::LinksController < ApplicationController
   end
 
   def update
-    if @link.update(link_params)
+    if link_params[:title].blank? || @link.url != link_params[:url]
+      @link.assign_attributes(link_params)
+      agent = Mechanize.new
+
+      # HTML情報の取得でエラーが発生した場合、代わりにURLからタイトルを代入するために、例外処理を入れて無視させる
+      begin
+        page = agent.get(link_params[:url])
+      rescue Timeout::Error
+      rescue Errno::EADDRNOTAVAIL
+      rescue Mechanize::ResponseCodeError
+      end
+
+      if @link.title.blank?
+        @link.title = page&.title ? page.title : URI.parse(@link.url).host
+      end
+
+      @link["image_url"] = page.at('meta[property="og:image"]')[:content] if page&.at('meta[property="og:image"]')
+    end
+
+    if @link.save
       render status: :no_content
     else
-      render status: :internal_server_error, json: @link.errors
+      render status: :internal_server_error, json: new_link.errors
     end
   end
 
@@ -63,7 +86,7 @@ class Api::V1::LinksController < ApplicationController
   private
 
   def link_params
-    params.require(:link).permit(:url, :title, :folder_id)
+    params.require(:link).permit(:url, :title, :image_url, :folder_id)
   end
 
   def correct_user_folder

@@ -1,3 +1,6 @@
+require "mechanize"
+require "uri"
+
 class Link < ApplicationRecord
   MAX_LINKS_COUNT = 30
 
@@ -8,6 +11,8 @@ class Link < ApplicationRecord
   validates :url, presence: true, length: { maximum: 1000 },
                   format: /\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/
   validates :title, presence: true, length: { maximum: 100 }
+
+  validates :image_url, length: { maximum: 2000 }
 
   scope :latest, -> { order(created_at: :desc) }
   scope :old, -> { order(created_at: :asc) }
