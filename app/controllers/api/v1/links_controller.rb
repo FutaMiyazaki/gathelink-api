@@ -49,7 +49,7 @@ class Api::V1::LinksController < ApplicationController
         @link.title = @page&.title ? @page.title : URI.parse(@link.url).host
       end
     end
-    if @link.save
+    if @link.update(link_params)
       render status: :no_content
     else
       render status: :internal_server_error, json: new_link.errors
