@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Folder, type: :model do
+  let(:user) { create(:user) }
+
   describe 'Association' do
     it "User と N:1 の関係である" do
       expect(described_class.reflect_on_association(:user).macro).to eq :belongs_to
@@ -65,6 +67,22 @@ RSpec.describe Folder, type: :model do
     it 'descriptionが200文字以下の場合、有効である' do
       folder = build(:folder, description: ("a" * 200).to_s)
       expect(folder).to be_valid
+    end
+
+    it "100個目まではフォルダの新規作成に成功すること" do
+      create_list(:folder, 99, user_id: user.id)
+      folder = build(:folder, user_id: user.id)
+      expect do
+        folder.save!
+      end.to change(described_class, :count).by(+1)
+    end
+
+    it "101個目のフォルダの新規作成には失敗すること" do
+      create_list(:folder, 100, user_id: user.id)
+      folder = build(:folder, user_id: user.id)
+      expect do
+        folder.save!
+      end.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
 end
