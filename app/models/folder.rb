@@ -9,14 +9,25 @@ class Folder < ApplicationRecord
   validates :name, presence: true, length: { maximum: 30 }
   validates :description, length: { maximum: 200 }
 
-  scope :latest, -> { order(created_at: :desc) }
-  scope :old, -> { order(created_at: :asc) }
-
-  def old_order_links
-    links.old.as_json(expect: %i[user_id])
-  end
+  scope :created_asc, -> { order(created_at: :asc) }
+  scope :created_desc, -> { order(created_at: :desc) }
+  scope :name_asc, -> { order(name: :asc) }
+  scope :name_desc, -> { order(name: :desc) }
 
   def folders_count_must_be_within_limit
     errors.add(:base, "フォルダは #{MAX_FOLDERS_COUNT} 個まで作成可能です") if user.folders.count >= MAX_FOLDERS_COUNT
+  end
+
+  def self.order_by(sort)
+    case sort
+    when "created_asc"
+      created_asc
+    when "created_desc"
+      created_desc
+    when "name_desc"
+      name_desc
+    else
+      name_asc
+    end
   end
 end

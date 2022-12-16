@@ -4,6 +4,7 @@ class Api::V1::FoldersController < ApplicationController
 
   def index
     folders = Folder.all
+
     render status: :ok, json: folders.as_json(include: [
                                                 { user: { only: %i[id name] } },
                                                 { links: { expect: %i[user_id] } }
@@ -13,16 +14,19 @@ class Api::V1::FoldersController < ApplicationController
   def show
     folder = Folder.find(params[:id])
     is_owner = api_v1_user_signed_in? ? folder.user_id == current_api_v1_user.id : false
+    links = Link.where(folder_id: folder.id).order_by(params[:sort])
+
     render status: :ok, json: {
       folder: folder.as_json({ include: [{ user: { only: %i[id name email] } },
-                                         { folder_favorites: { only: %i[id user_id] } }],
-                               methods: :old_order_links }),
+                                         { folder_favorites: { only: %i[id user_id] } }] }),
+      links:,
       is_owner:
     }
   end
 
   def create
     folder = current_api_v1_user.folders.build(folder_params)
+
     if folder.save
       render status: :created, json: folder.as_json(expect: %i[user_id])
     else
@@ -47,22 +51,12 @@ class Api::V1::FoldersController < ApplicationController
   end
 
   def my_folder_list
-    folders = case params[:sort]
-              when "latest"
-                current_api_v1_user.folders.latest
-              else
-                current_api_v1_user.folders.old
-              end
+    folders = current_api_v1_user.folders.order_by(params[:sort])
     render status: :ok, json: folders.as_json(include: :links)
   end
 
   def favorited_folders_list
-    folders = case params[:sort]
-              when "latest"
-                current_api_v1_user.favorited_folders.latest
-              else
-                current_api_v1_user.favorited_folders.old
-              end
+    folders = current_api_v1_user.favorited_folders.order_by(params[:sort])
     render status: :ok, json: folders.as_json(include: :links)
   end
 
@@ -74,6 +68,7 @@ class Api::V1::FoldersController < ApplicationController
 
   def correct_user
     @folder = Folder.find(params[:id])
+
     render status: :forbidden, json: { message: "不正なリクエストです" } if current_api_v1_user.id != @folder.user_id
   end
 end
