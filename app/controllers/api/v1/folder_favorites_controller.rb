@@ -6,7 +6,7 @@ class Api::V1::FolderFavoritesController < ApplicationController
   def create
     favorite = FolderFavorite.new(folder_id: params[:folder_id], user_id: current_api_v1_user.id)
     if favorite.save
-      folders = current_api_v1_user.favorited_folders.old
+      folders = current_api_v1_user.favorited_folders.order_by('created_desc')
       render status: :created, json: {
         favorite: favorite.as_json(only: %i[id user_id]),
         folders: folders.as_json(include: [{ links: { only: %i[id title url] } }])
