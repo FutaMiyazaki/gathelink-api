@@ -69,6 +69,46 @@ RSpec.describe Folder, type: :model do
       expect(folder).to be_valid
     end
 
+    it 'colorが # から始まらない文字の場合、無効である' do
+      folder = build(:folder, color: ("a" * 6).to_s)
+      expect(folder).to be_invalid
+    end
+
+    it 'colorが # から始まるが、# 以降が1文字の場合、無効である' do
+      folder = build(:folder, color: ("#" + "a" * 1).to_s)
+      expect(folder).to be_invalid
+    end
+
+    it 'colorが # から始まるが、# 以降が2文字の場合、無効である' do
+      folder = build(:folder, color: ("#" + "a" * 2).to_s)
+      expect(folder).to be_invalid
+    end
+
+    it 'colorが # から始まるが、# 以降が3文字の場合、有効である' do
+      folder = build(:folder, color: ("#" + "a" * 3).to_s)
+      expect(folder).to be_valid
+    end
+
+    it 'colorが # から始まるが、# 以降が4文字の場合、無効である' do
+      folder = build(:folder, color: ("#" + "a" * 4).to_s)
+      expect(folder).to be_invalid
+    end
+
+    it 'colorが # から始まるが、# 以降が5文字の場合、無効である' do
+      folder = build(:folder, color: ("#" + "a" * 5).to_s)
+      expect(folder).to be_invalid
+    end
+
+    it 'colorが # から始まるが、# 以降が6文字の場合、有効である' do
+      folder = build(:folder, color: ("#" + "a" * 6).to_s)
+      expect(folder).to be_valid
+    end
+
+    it 'colorが # から始まるが、# 以降が7文字以上の場合、無効である' do
+      folder = build(:folder, color: ("#" + "a" * 7).to_s)
+      expect(folder).to be_invalid
+    end
+
     it "100個目まではフォルダの新規作成に成功すること" do
       create_list(:folder, 99, user_id: user.id)
       folder = build(:folder, user_id: user.id)
