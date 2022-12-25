@@ -5,7 +5,7 @@ RSpec.describe "Api::V1::Folders", type: :request do
   let!(:auth_token) { user.create_new_auth_token }
   let!(:folder) { create(:folder, user_id: user.id) }
   let!(:others_folder) { create(:folder) }
-  let!(:params) { { name: "gathelinkのフォルダ" } }
+  let!(:params) { { name: "gathelinkのフォルダ", color: "#26a69a" } }
 
   describe "GET /api/v1/folders" do
     it "リクエストが成功すること" do
