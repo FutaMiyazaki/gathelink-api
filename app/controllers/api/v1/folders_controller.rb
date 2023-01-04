@@ -1,15 +1,6 @@
 class Api::V1::FoldersController < ApplicationController
-  before_action :authenticate_api_v1_user!, only: %i[create update destroy my_folder_list]
+  before_action :authenticate_api_v1_user!, only: %i[create update destroy my_folders]
   before_action :correct_user, only: %i[update destroy]
-
-  def index
-    folders = Folder.all
-
-    render status: :ok, json: folders.as_json(include: [
-                                                { user: { only: %i[id name] } },
-                                                { links: { expect: %i[user_id] } }
-                                              ])
-  end
 
   def show
     folder = Folder.find(params[:id])
@@ -50,12 +41,12 @@ class Api::V1::FoldersController < ApplicationController
     end
   end
 
-  def my_folder_list
+  def my_folders
     folders = current_api_v1_user.folders.order_by(params[:sort])
     render status: :ok, json: folders.as_json(include: :links)
   end
 
-  def favorited_folders_list
+  def favorite_folders
     folders = current_api_v1_user.favorited_folders.order_by(params[:sort])
     render status: :ok, json: folders.as_json(include: :links)
   end

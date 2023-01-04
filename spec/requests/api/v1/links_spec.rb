@@ -8,13 +8,6 @@ RSpec.describe "Api::V1::Links", type: :request do
   let!(:link) { create(:link, user_id: user.id) }
   let!(:others_link) { create(:link) }
 
-  describe "GET /api/v1/links" do
-    it "リクエストが成功すること" do
-      get api_v1_links_path
-      expect(response).to have_http_status(:success)
-    end
-  end
-
   describe "GET /api/v1/links/:id" do
     it "リクエストが成功すること" do
       get api_v1_link_path(link.id), headers: auth_token
@@ -94,6 +87,18 @@ RSpec.describe "Api::V1::Links", type: :request do
     it "所有者でない場合、リクエストが失敗すること" do
       delete api_v1_link_path(others_link.id), headers: auth_token
       expect(response).to have_http_status(:forbidden)
+    end
+  end
+
+  describe "GET /api/v1/my_links" do
+    it "リクエストが成功すること" do
+      get api_v1_my_links_path, headers: auth_token
+      expect(response).to have_http_status(:success)
+    end
+
+    it "ヘッダに認証情報が存在しない場合、リクエストが失敗すること" do
+      get api_v1_my_links_path
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 end

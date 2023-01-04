@@ -2,7 +2,7 @@ require "mechanize"
 require "uri"
 
 class Link < ApplicationRecord
-  MAX_LINKS_COUNT = 30
+  MAX_LINKS_COUNT = 20
 
   belongs_to :user
   belongs_to :folder
@@ -15,8 +15,8 @@ class Link < ApplicationRecord
 
   scope :created_asc, -> { order(created_at: :asc) }
   scope :created_desc, -> { order(created_at: :desc) }
-  scope :title_asc, -> { order(title: :asc) }
-  scope :title_desc, -> { order(title: :desc) }
+  scope :name_asc, -> { order(title: :asc) }
+  scope :name_desc, -> { order(title: :desc) }
 
   def links_count_must_be_within_limit
     errors.add(:base, "フォルダには #{MAX_LINKS_COUNT} 個までリンクを追加することが可能です") if folder.links.count >= MAX_LINKS_COUNT
@@ -28,10 +28,10 @@ class Link < ApplicationRecord
       created_asc
     when "created_desc"
       created_desc
-    when "title_desc"
-      title_desc
+    when "name_desc"
+      name_desc
     else
-      title_asc
+      name_asc
     end
   end
 end
