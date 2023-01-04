@@ -109,16 +109,16 @@ RSpec.describe Folder, type: :model do
       expect(folder).to be_invalid
     end
 
-    it "100個目まではフォルダの新規作成に成功すること" do
-      create_list(:folder, 99, user_id: user.id)
+    it "50個目まではフォルダの新規作成に成功すること" do
+      create_list(:folder, 49, user_id: user.id)
       folder = build(:folder, user_id: user.id)
       expect do
         folder.save!
       end.to change(described_class, :count).by(+1)
     end
 
-    it "101個目のフォルダの新規作成には失敗すること" do
-      create_list(:folder, 100, user_id: user.id)
+    it "51個目のフォルダの新規作成には失敗すること" do
+      create_list(:folder, 50, user_id: user.id)
       folder = build(:folder, user_id: user.id)
       expect do
         folder.save!

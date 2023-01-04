@@ -1,5 +1,5 @@
 class Folder < ApplicationRecord
-  MAX_FOLDERS_COUNT = 100
+  MAX_FOLDERS_COUNT = 50
   COLOR_CODE_REGEX = /\A#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})\z/
 
   belongs_to :user
