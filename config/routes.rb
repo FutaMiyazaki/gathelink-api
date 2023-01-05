@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       }
       devise_scope :api_v1_user do
         post "auth/guest_sign_in", to: "auth/sessions#guest_sign_in"
+        get "auth/show_current_user", to: "auth/sessions#show_current_user"
       end
 
       resources :folders, only: %i[show create update destroy]

@@ -1,5 +1,5 @@
 class Api::V1::FoldersController < ApplicationController
-  before_action :authenticate_api_v1_user!, only: %i[create update destroy my_folders]
+  before_action :authenticate_api_v1_user!, only: %i[create update destroy my_folders favorite_folders]
   before_action :correct_user, only: %i[update destroy]
 
   def show
