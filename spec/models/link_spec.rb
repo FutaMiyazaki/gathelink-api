@@ -65,16 +65,16 @@ RSpec.describe Link, type: :model do
       expect(link).to be_valid
     end
 
-    it "30個目まではリンクの新規作成に成功すること" do
-      create_list(:link, 29, folder_id: folder.id)
+    it "20個目まではリンクの新規作成に成功すること" do
+      create_list(:link, 19, folder_id: folder.id)
       link = build(:link, folder_id: folder.id)
       expect do
         link.save!
       end.to change(described_class, :count).by(+1)
     end
 
-    it "31個目のリンクの新規作成には失敗すること" do
-      create_list(:link, 30, folder_id: folder.id)
+    it "21個目のリンクの新規作成には失敗すること" do
+      create_list(:link, 20, folder_id: folder.id)
       link = build(:link, folder_id: folder.id)
       expect do
         link.save!

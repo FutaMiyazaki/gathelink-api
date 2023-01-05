@@ -7,13 +7,6 @@ RSpec.describe "Api::V1::Folders", type: :request do
   let!(:others_folder) { create(:folder) }
   let!(:params) { { name: "gathelinkのフォルダ", color: "#26a69a" } }
 
-  describe "GET /api/v1/folders" do
-    it "リクエストが成功すること" do
-      get api_v1_folders_path
-      expect(response).to have_http_status(:success)
-    end
-  end
-
   describe "GET /api/v1/folders/:id" do
     it "リクエストが成功すること" do
       get api_v1_folder_path(folder.id)
@@ -67,14 +60,14 @@ RSpec.describe "Api::V1::Folders", type: :request do
     end
   end
 
-  describe "GET /api/v1/my_folder" do
+  describe "GET /api/v1/my_folders" do
     it "リクエストが成功すること" do
-      get api_v1_my_folder_list_path, headers: auth_token
+      get api_v1_my_folders_path, headers: auth_token
       expect(response).to have_http_status(:success)
     end
 
     it "ヘッダに認証情報が存在しない場合、リクエストが失敗すること" do
-      get api_v1_my_folder_list_path
+      get api_v1_my_folders_path
       expect(response).to have_http_status(:unauthorized)
     end
   end

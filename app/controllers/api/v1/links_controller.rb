@@ -2,14 +2,9 @@ require "mechanize"
 require "uri"
 
 class Api::V1::LinksController < ApplicationController
-  before_action :authenticate_api_v1_user!, only: %i[show create update destroy]
+  before_action :authenticate_api_v1_user!, only: %i[show create update destroy my_links]
   before_action :correct_user_folder, only: %i[create update]
   before_action :correct_user_link, only: %i[show update destroy]
-
-  def index
-    links = Link.all
-    render status: :ok, json: links
-  end
 
   def show
     link = Link.find(params[:id])
@@ -62,6 +57,12 @@ class Api::V1::LinksController < ApplicationController
     else
       render status: :internal_server_error, json: @link.errors
     end
+  end
+
+  def my_links
+    pagy, links = pagy(current_api_v1_user.links.order_by(params[:sort]))
+    pagy_headers_merge(pagy)
+    render status: :ok, json: { links:, pagy: }
   end
 
   private
