@@ -4,5 +4,6 @@ FactoryBot.define do
     name { "テストフォルダ" }
     description { "これはテスト用のフォルダです" }
     color { "#26a69a" }
+    icon { "basketball" }
   end
 end

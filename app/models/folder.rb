@@ -10,6 +10,7 @@ class Folder < ApplicationRecord
   validates :name, presence: true, length: { maximum: 30 }
   validates :description, length: { maximum: 200 }
   validates :color, format: { with: COLOR_CODE_REGEX }
+  validates :icon, length: { maximum: 30 }
 
   scope :created_asc, -> { order(created_at: :asc) }
   scope :created_desc, -> { order(created_at: :desc) }

@@ -54,7 +54,7 @@ class Api::V1::FoldersController < ApplicationController
   private
 
   def folder_params
-    params.require(:folder).permit(:name, :description, :color)
+    params.require(:folder).permit(:name, :description, :color, :icon)
   end
 
   def correct_user
