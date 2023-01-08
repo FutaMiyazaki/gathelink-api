@@ -5,6 +5,8 @@ class Folder < ApplicationRecord
   belongs_to :user
   has_many :links, dependent: :destroy
   has_many :folder_favorites, dependent: :destroy
+  has_many :folder_taggings, dependent: :destroy
+  has_many :tags, through: :folder_taggings
 
   validate :folders_count_must_be_within_limit
   validates :name, presence: true, length: { maximum: 30 }

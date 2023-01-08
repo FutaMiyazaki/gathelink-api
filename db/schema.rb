@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_08_074747) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_08_145132) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -22,6 +22,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_08_074747) do
     t.index ["folder_id"], name: "index_folder_favorites_on_folder_id"
     t.index ["user_id", "folder_id"], name: "index_folder_favorites_on_user_id_and_folder_id", unique: true
     t.index ["user_id"], name: "index_folder_favorites_on_user_id"
+  end
+
+  create_table "folder_taggings", force: :cascade do |t|
+    t.bigint "folder_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["folder_id", "tag_id"], name: "index_folder_taggings_on_folder_id_and_tag_id", unique: true
+    t.index ["folder_id"], name: "index_folder_taggings_on_folder_id"
+    t.index ["tag_id"], name: "index_folder_taggings_on_tag_id"
   end
 
   create_table "folders", force: :cascade do |t|
@@ -45,6 +55,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_08_074747) do
     t.text "image_url"
     t.index ["folder_id"], name: "index_links_on_folder_id"
     t.index ["user_id"], name: "index_links_on_user_id"
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
   create_table "users", force: :cascade do |t|
@@ -74,6 +91,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_08_074747) do
 
   add_foreign_key "folder_favorites", "folders"
   add_foreign_key "folder_favorites", "users"
+  add_foreign_key "folder_taggings", "folders"
+  add_foreign_key "folder_taggings", "tags"
   add_foreign_key "folders", "users"
   add_foreign_key "links", "folders"
   add_foreign_key "links", "users"
