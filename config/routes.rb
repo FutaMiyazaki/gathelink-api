@@ -9,7 +9,11 @@ Rails.application.routes.draw do
         get "auth/show_current_user", to: "auth/sessions#show_current_user"
       end
 
-      resources :folders, only: %i[show create update destroy]
+      resources :folders, only: %i[show create update destroy] do
+        member do
+          get "by_tag"
+        end
+      end
       get "my_folders", to: "folders#my_folders"
       get "favorite_folders", to: "folders#favorite_folders"
       resources :folder_favorites, only: %i[create destroy]

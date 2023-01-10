@@ -34,7 +34,7 @@ RSpec.describe Tag, type: :model do
 
     it '同じ name を持つ tag は無効である' do
       tag_name = "ライフハック"
-      tag = create(:tag, name: tag_name)
+      create(:tag, name: tag_name)
       new_tag = build(:tag, name: tag_name)
       expect(new_tag).to be_invalid
     end
