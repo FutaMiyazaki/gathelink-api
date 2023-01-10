@@ -40,6 +40,7 @@ Style/HashSyntax:
 
 Metrics/MethodLength:
   Exclude:
+    - "app/models/folder.rb"
     - "app/controllers/api/v1/links_controller.rb"
     - "db/migrate/20220912024024_devise_token_auth_create_users.rb"
 

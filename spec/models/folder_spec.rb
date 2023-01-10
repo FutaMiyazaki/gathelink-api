@@ -109,6 +109,31 @@ RSpec.describe Folder, type: :model do
       expect(folder).to be_invalid
     end
 
+    it 'iconがnilの場合、有効である' do
+      folder = build(:folder, icon: nil)
+      expect(folder).to be_valid
+    end
+
+    it 'iconが空白の場合、有効である' do
+      folder = build(:folder, icon: " ")
+      expect(folder).to be_valid
+    end
+
+    it 'iconが空文字の場合、有効である' do
+      folder = build(:folder, icon: "")
+      expect(folder).to be_valid
+    end
+
+    it 'iconが30文字以下の場合、有効である' do
+      folder = build(:folder, icon: ("a" * 30).to_s)
+      expect(folder).to be_valid
+    end
+
+    it 'iconが31文字以上の場合、無効である' do
+      folder = build(:folder, icon: ("a" * 31).to_s)
+      expect(folder).to be_invalid
+    end
+
     it "50個目まではフォルダの新規作成に成功すること" do
       create_list(:folder, 49, user_id: user.id)
       folder = build(:folder, user_id: user.id)

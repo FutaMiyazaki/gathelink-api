@@ -2,11 +2,11 @@ require 'rails_helper'
 
 RSpec.describe FolderFavorite, type: :model do
   describe 'Association' do
-    it "User と N:1 の関係である" do
+    it "User と 1:N の関係である" do
       expect(described_class.reflect_on_association(:user).macro).to eq :belongs_to
     end
 
-    it "Folder と N:1 の関係である" do
+    it "Folder と 1:N の関係である" do
       expect(described_class.reflect_on_association(:folder).macro).to eq :belongs_to
     end
   end
